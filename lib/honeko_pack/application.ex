@@ -10,7 +10,9 @@ defmodule HonekoPack.Application do
     children = [
       # Starts a worker by calling: HonekoPack.Worker.start_link(arg)
       # {HonekoPack.Worker, arg}
-      Azure.CognitiveServices.TextToSpeech.AccessTokenAgent
+      Azure.CognitiveServices.TextToSpeech.AccessTokenAgent,
+      HonekoPack.Ticker,
+      HonekoPack.Worker.Aht20Agent
     ]
 
     # See https://hexdocs.pm/elixir/Supervisor.html
