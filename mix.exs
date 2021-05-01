@@ -24,7 +24,9 @@ defmodule HonekoPack.MixProject do
     [
       # {:dep_from_hexpm, "~> 0.3.0"},
       # {:dep_from_git, git: "https://github.com/elixir-lang/my_dep.git", tag: "0.1.0"}
-      {:circuits_i2c, "~> 0.1"}
+      {:circuits_i2c, "~> 0.1"},
+      {:httpoison, "~> 1.8"},
+      {:jason, "~> 1.2"}
     ]
   end
 end
