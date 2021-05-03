@@ -19,11 +19,9 @@ defmodule HonekoPack do
   @default_voice_path "output"
 
   def run do
-    func1 = &make_top_news/0
-    func2 = &make_weather_forecast/0
     me = self()
 
-    [func1, func2]
+    [&make_top_news_voice_file/0, &make_weather_forecast_voice_file/0]
     |> Enum.map(fn f ->
       spawn_link(fn -> send(me, {self(), f.()}) end)
     end)
@@ -33,25 +31,12 @@ defmodule HonekoPack do
           result
       end
     end)
-    |> Enum.map(fn text ->
-      make_voice_file(text)
-      play()
-    end)
-  end
-
-  def play_top_news do
-    make_top_news_voice()
-    play()
-  end
-
-  def play_weather_forecast do
-    make_weather_forecast_voice()
-    play()
+    |> Enum.map(&play/1)
   end
 
   def make_weather_forecast_voice do
     make_weather_forecast()
-    |> make_voice_file()
+    |> make_voice()
   end
 
   def make_weather_forecast do
@@ -59,9 +44,13 @@ defmodule HonekoPack do
     |> Map.get("text")
   end
 
+  def make_weather_forecast_voice_file do
+    do_something_and_create_file(:make_weather_forecast_voice)
+  end
+
   def make_top_news_voice do
     make_top_news()
-    |> make_voice_file()
+    |> make_voice()
   end
 
   def make_top_news do
@@ -69,14 +58,17 @@ defmodule HonekoPack do
     |> Map.get("description")
   end
 
+  def make_top_news_voice_file do
+    do_something_and_create_file(:make_top_news_voice)
+  end
+
   def play(path \\ @default_voice_path) do
     do_play(path, :os.type())
   end
 
-  def make_voice_file(text \\ "hello", path \\ @default_voice_path) do
+  def make_voice(text) do
     Azure.CognitiveServices.TextToSpeech.ssml(text, select_voice())
     |> Azure.CognitiveServices.TextToSpeech.to_speech_of_neural_voice()
-    |> (&File.write(path, &1)).()
   end
 
   def select_voice(opts \\ []) do
@@ -97,5 +89,14 @@ defmodule HonekoPack do
 
   defp do_play(path, _) do
     :os.cmd('aplay #{path}')
+  end
+
+  defp do_something_and_create_file(function_name) do
+    path = Atom.to_string(function_name) <> ".wav"
+
+    apply(__MODULE__, function_name, [])
+    |> (&File.write(path, &1)).()
+
+    path
   end
 end

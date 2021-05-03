@@ -25,3 +25,5 @@ honeko_pack-*.tar
 
 # Temporary files for e.g. tests
 /tmp
+
+*.wav
