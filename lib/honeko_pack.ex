@@ -18,26 +18,55 @@ defmodule HonekoPack do
 
   @default_voice_path "output"
 
+  def run do
+    func1 = &make_top_news/0
+    func2 = &make_weather_forecast/0
+    me = self()
+
+    [func1, func2]
+    |> Enum.map(fn f ->
+      spawn_link(fn -> send(me, {self(), f.()}) end)
+    end)
+    |> Enum.map(fn pid ->
+      receive do
+        {^pid, result} ->
+          result
+      end
+    end)
+    |> Enum.map(fn text ->
+      make_voice_file(text)
+      play()
+    end)
+  end
+
   def play_top_news do
     make_top_news_voice()
     play()
   end
 
-  def play_weather do
-    make_weather_voice()
+  def play_weather_forecast do
+    make_weather_forecast_voice()
     play()
   end
 
-  def make_weather_voice do
-    Weather.Forecast.get()
-    |> Map.get("text")
+  def make_weather_forecast_voice do
+    make_weather_forecast()
     |> make_voice_file()
   end
 
+  def make_weather_forecast do
+    Weather.Forecast.get()
+    |> Map.get("text")
+  end
+
   def make_top_news_voice do
+    make_top_news()
+    |> make_voice_file()
+  end
+
+  def make_top_news do
     Azure.Bing.NewsSearch.top_news()
     |> Map.get("description")
-    |> make_voice_file()
   end
 
   def play(path \\ @default_voice_path) do

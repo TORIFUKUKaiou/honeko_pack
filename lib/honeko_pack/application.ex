@@ -12,7 +12,8 @@ defmodule HonekoPack.Application do
       # {HonekoPack.Worker, arg}
       Azure.CognitiveServices.TextToSpeech.AccessTokenAgent,
       HonekoPack.Ticker,
-      HonekoPack.Worker.Aht20Agent
+      HonekoPack.Worker.Aht20Agent,
+      HonekoPack.Scheduler
     ]
 
     # See https://hexdocs.pm/elixir/Supervisor.html
