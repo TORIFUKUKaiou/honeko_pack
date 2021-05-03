@@ -1,5 +1,6 @@
 defmodule HonekoPack.Worker do
   @url "https://aht20.torifuku-kaiou.tokyo/api/values"
+  # @url "http://beam.soracom.io:8888"
   @headers [{"Content-Type", "application/json"}]
   @options [timeout: 50_000, recv_timeout: 50_000]
 
@@ -12,6 +13,7 @@ defmodule HonekoPack.Worker do
     time = DateTime.utc_now() |> DateTime.to_unix()
     HonekoPack.Worker.Aht20Agent.update(temperature, humidity, time)
     post()
+    # if rem(time, 60) == 0, do: post()
   end
 
   defp aht20_read({:unix, :darwin}) do
