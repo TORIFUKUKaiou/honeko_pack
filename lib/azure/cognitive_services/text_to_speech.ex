@@ -16,10 +16,11 @@ defmodule Azure.CognitiveServices.TextToSpeech do
     raw-48khz-16bit-mono-pcm            riff-48khz-16bit-mono-pcm
     audio-48khz-96kbitrate-mono-mp3     audio-48khz-192kbitrate-mono-mp3)
   @user_agent "awesome"
+  @options [timeout: 50_000, recv_timeout: 50_000]
 
   def voices_list do
     voices_list_endpoint()
-    |> HTTPoison.get!(authorization_header(access_token()))
+    |> HTTPoison.get!(authorization_header(access_token()), @options)
     |> Map.get(:body)
     |> Jason.decode!()
   end
@@ -44,7 +45,7 @@ defmodule Azure.CognitiveServices.TextToSpeech do
 
   def to_speech_of_neural_voice(ssml, audio \\ "riff-24khz-16bit-mono-pcm") do
     standard_and_neural_voice_endpoint()
-    |> HTTPoison.post!(ssml, headers(audio))
+    |> HTTPoison.post!(ssml, headers(audio), @options)
     |> Map.get(:body)
   end
 
@@ -76,7 +77,7 @@ defmodule Azure.CognitiveServices.TextToSpeech do
     ]
 
     issue_token_endpoint()
-    |> HTTPoison.post!("", headers)
+    |> HTTPoison.post!("", headers, @options)
     |> Map.get(:body)
   end
 

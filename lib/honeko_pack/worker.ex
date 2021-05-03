@@ -1,6 +1,7 @@
 defmodule HonekoPack.Worker do
   @url "https://aht20.torifuku-kaiou.tokyo/api/values"
   @headers [{"Content-Type", "application/json"}]
+  @options [timeout: 50_000, recv_timeout: 50_000]
 
   def run do
     aht20()
@@ -29,6 +30,6 @@ defmodule HonekoPack.Worker do
       HonekoPack.Worker.Aht20Agent.get()
 
     json = Jason.encode!(%{value: %{temperature: temperature, humidity: humidity, time: time}})
-    HTTPoison.post(@url, json, @headers)
+    HTTPoison.post(@url, json, @headers, @options)
   end
 end
