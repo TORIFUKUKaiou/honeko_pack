@@ -23,6 +23,17 @@ defmodule HonekoPack do
     play()
   end
 
+  def play_weather do
+    make_weather_voice()
+    play()
+  end
+
+  def make_weather_voice do
+    Weather.Forecast.get()
+    |> Map.get("text")
+    |> make_voice_file()
+  end
+
   def make_top_news_voice do
     Azure.Bing.NewsSearch.top_news()
     |> Map.get("description")
