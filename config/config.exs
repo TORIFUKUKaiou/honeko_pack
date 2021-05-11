@@ -2,5 +2,6 @@ import Config
 
 config :honeko_pack, HonekoPack.Scheduler,
   jobs: [
-    {"30 21 * * *", {HonekoPack, :run, []}}
+    {"31 21 * * *", {HonekoPack, :run, []}},
+    {"50 23 * * *", {HonekoPack, :run, []}}
   ]
